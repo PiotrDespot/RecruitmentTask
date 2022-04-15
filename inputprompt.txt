@@ -1,0 +1,49 @@
+    join D:\PycharmProjects\course-files\course-files\autos.csv D:\PycharmProjects\course-files\course-files\test2.csv name inner
+
+D:\PycharmProjects\course-files\course-files\autos.csv
+D:\PycharmProjects\course-files\course-files\blood.csv
+
+
+algorythm:
+
+1. Find index matching the columns in both files
+2. Move the column to the leftmost corner, then delete the column from 2nd file
+3. If there are other duplicates, check if the values match for every index, if it does not match print error, if they match delete column from 2nd file
+4. add NaN to each row that doesnt have a value
+5.
+
+
+
+def merge_files_left_right(file_name1, file_name2, duplicate_list):
+    with open(file_name1, 'r') as f1:
+        with open(file_name2, 'r') as f2:
+            for line1 in f1:
+                for line2 in f2:
+                    line_list1 = line1.replace("\n", "").split(",")
+                    line_list2 = line2.replace("\n", "").split(",")
+                    i = 0
+                    for index_file1, index_file2, isMergeColumn in duplicate_list:
+                        index_file2 = index_file2 - i
+                        if line_list1[index_file1] == line_list2[index_file2]:
+                            line_list2.remove(line_list2[index_file2])
+                            i += 1
+                        else:
+                            break
+                    else:
+                        line_list1.extend(line_list2)
+                        final_row = line_list1.copy()
+                        break
+                else:
+                    line_list1 = line1.replace("\n", "").split(",")
+                    line_list2 = line2.replace("\n", "").split(",")
+                    i = 0
+                    for index_file1, index_file2, isMergeColumn in duplicate_list:
+                        index_file2 -= i
+                        line_list2.remove(line_list2[index_file2])
+                        i += 1
+                    else:
+                        line_list2 = ["NaN" for column in line_list2]
+                        line_list1.extend(line_list2)
+                        final_row = line_list1.copy()
+
+                yield ",".join(final_row)
